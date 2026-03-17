@@ -13,6 +13,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -56,6 +59,12 @@ export default {
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
+        },
+        energy: {
+          green: "hsl(var(--energy-green))",
+          blue: "hsl(var(--energy-blue))",
+          amber: "hsl(var(--energy-amber))",
+          red: "hsl(var(--energy-red))",
         },
       },
       borderRadius: {
