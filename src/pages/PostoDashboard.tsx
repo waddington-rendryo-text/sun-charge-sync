@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { DollarSign, Fuel, Zap, TrendingUp, Settings, FileText, Download } from "lucide-react";
+import ManagePostoUsers from "@/components/ManagePostoUsers";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
