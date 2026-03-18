@@ -53,7 +53,7 @@ const ClienteDashboard = () => {
           J
         </div>
         <div>
-          <h1 className="text-xl font-bold text-foreground">Olá, João! 👋</h1>
+          <h1 className="text-xl font-bold text-foreground">Olá, {profile?.display_name || "Usuário"}! 👋</h1>
           <p className="text-xs text-muted-foreground">Plano Residencial — Autoconsumo</p>
         </div>
       </div>

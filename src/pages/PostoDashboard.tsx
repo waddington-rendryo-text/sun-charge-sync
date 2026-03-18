@@ -32,7 +32,10 @@ const PostoDashboard = () => {
 
   return (
     <div className="container mx-auto max-w-6xl space-y-6 px-4 py-6">
-      <h1 className="text-xl font-bold text-foreground">Painel do Posto 🏪</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-bold text-foreground">Painel do Posto 🏪</h1>
+        {isAdmin && <ManagePostoUsers />}
+      </div>
 
       {/* Top Metrics */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
