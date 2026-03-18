@@ -1,13 +1,20 @@
-import { Sun, ArrowLeftRight, Zap } from "lucide-react";
+import { ArrowLeftRight, Zap, LogOut } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
 const AppHeader = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { profile, signOut } = useAuth();
   const isCliente = location.pathname.startsWith("/cliente");
   const isPosto = location.pathname.startsWith("/posto");
   const showSwitch = isCliente || isPosto;
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/auth");
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-card/80 backdrop-blur-md">
@@ -17,8 +24,8 @@ const AppHeader = () => {
             <Zap className="h-5 w-5 text-primary-foreground" />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-bold leading-tight text-foreground">Smart Solar</span>
-            <span className="text-[10px] font-medium leading-tight text-muted-foreground">por Indução</span>
+            <span className="text-sm font-bold leading-tight text-foreground">Plug & Charge</span>
+            <span className="text-[10px] font-medium leading-tight text-muted-foreground">Recarga Solar</span>
           </div>
         </button>
 
@@ -39,7 +46,14 @@ const AppHeader = () => {
               </Button>
             </>
           )}
-          <Sun className="h-5 w-5 text-energy-amber" />
+          {profile && (
+            <span className="hidden md:inline text-xs text-muted-foreground">
+              {profile.display_name}
+            </span>
+          )}
+          <Button variant="ghost" size="icon" onClick={handleSignOut} className="h-9 w-9 text-muted-foreground hover:text-destructive">
+            <LogOut className="h-4 w-4" />
+          </Button>
         </div>
       </div>
     </header>

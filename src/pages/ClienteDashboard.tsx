@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Battery, Zap, Sun, Gift, BarChart3, Car, Activity, DollarSign, Clock, TrendingUp } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -9,6 +10,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 
 const ClienteDashboard = () => {
+  const { profile } = useAuth();
   const [status, setStatus] = useState(mockEstacao.comandos.status);
   const [loading, setLoading] = useState(false);
   const deteccao = mockEstacao.sensores.deteccao;
@@ -51,7 +53,7 @@ const ClienteDashboard = () => {
           J
         </div>
         <div>
-          <h1 className="text-xl font-bold text-foreground">Olá, João! 👋</h1>
+          <h1 className="text-xl font-bold text-foreground">Olá, {profile?.display_name || "Usuário"}! 👋</h1>
           <p className="text-xs text-muted-foreground">Plano Residencial — Autoconsumo</p>
         </div>
       </div>

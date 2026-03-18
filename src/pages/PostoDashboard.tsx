@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { DollarSign, Fuel, Zap, TrendingUp, Settings, FileText, Download } from "lucide-react";
+import ManagePostoUsers from "@/components/ManagePostoUsers";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
@@ -17,6 +19,8 @@ import { toast } from "sonner";
 const PIE_COLORS = ["hsl(160,84%,39%)", "hsl(217,91%,60%)"];
 
 const PostoDashboard = () => {
+  const { roles } = useAuth();
+  const isAdmin = roles.includes("admin");
   const [precoKwh, setPrecoKwh] = useState(mockPosto.config.preco_kwh.toString());
   const [cashback, setCashback] = useState(mockPosto.config.cashback_percent.toString());
   const totalAbastecimentos = mockAbastecimentosRealtime.length;
@@ -28,7 +32,10 @@ const PostoDashboard = () => {
 
   return (
     <div className="container mx-auto max-w-6xl space-y-6 px-4 py-6">
-      <h1 className="text-xl font-bold text-foreground">Painel do Posto 🏪</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-bold text-foreground">Painel do Posto 🏪</h1>
+        {isAdmin && <ManagePostoUsers />}
+      </div>
 
       {/* Top Metrics */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
