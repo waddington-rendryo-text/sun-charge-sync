@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Battery, Zap, Sun, Gift, BarChart3, Car, Activity, DollarSign, Clock, TrendingUp } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
