@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 
 const ClienteDashboard = () => {
+  const { profile } = useAuth();
   const [status, setStatus] = useState(mockEstacao.comandos.status);
   const [loading, setLoading] = useState(false);
   const deteccao = mockEstacao.sensores.deteccao;
