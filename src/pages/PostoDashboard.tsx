@@ -19,6 +19,8 @@ import { toast } from "sonner";
 const PIE_COLORS = ["hsl(160,84%,39%)", "hsl(217,91%,60%)"];
 
 const PostoDashboard = () => {
+  const { roles } = useAuth();
+  const isAdmin = roles.includes("admin");
   const [precoKwh, setPrecoKwh] = useState(mockPosto.config.preco_kwh.toString());
   const [cashback, setCashback] = useState(mockPosto.config.cashback_percent.toString());
   const totalAbastecimentos = mockAbastecimentosRealtime.length;
