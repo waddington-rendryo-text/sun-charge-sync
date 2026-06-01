@@ -14,6 +14,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      charging_sessions: {
+        Row: {
+          cliente_user_id: string | null
+          created_at: string
+          ended_at: string | null
+          id: string
+          started_at: string
+          station_id: string
+          status: string
+          total_cost: number
+          total_kwh: number
+          updated_at: string
+        }
+        Insert: {
+          cliente_user_id?: string | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          started_at?: string
+          station_id: string
+          status?: string
+          total_cost?: number
+          total_kwh?: number
+          updated_at?: string
+        }
+        Update: {
+          cliente_user_id?: string | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          started_at?: string
+          station_id?: string
+          status?: string
+          total_cost?: number
+          total_kwh?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "charging_sessions_station_id_fkey"
+            columns: ["station_id"]
+            isOneToOne: false
+            referencedRelation: "stations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -38,6 +85,89 @@ export type Database = {
           id?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      sensor_readings: {
+        Row: {
+          charging_status: string
+          current: number | null
+          energy_kwh: number | null
+          id: string
+          power: number | null
+          recorded_at: string
+          station_id: string
+          temperature: number | null
+          vehicle_detected: boolean
+          voltage: number | null
+        }
+        Insert: {
+          charging_status?: string
+          current?: number | null
+          energy_kwh?: number | null
+          id?: string
+          power?: number | null
+          recorded_at?: string
+          station_id: string
+          temperature?: number | null
+          vehicle_detected?: boolean
+          voltage?: number | null
+        }
+        Update: {
+          charging_status?: string
+          current?: number | null
+          energy_kwh?: number | null
+          id?: string
+          power?: number | null
+          recorded_at?: string
+          station_id?: string
+          temperature?: number | null
+          vehicle_detected?: boolean
+          voltage?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sensor_readings_station_id_fkey"
+            columns: ["station_id"]
+            isOneToOne: false
+            referencedRelation: "stations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stations: {
+        Row: {
+          created_at: string
+          device_token: string
+          id: string
+          is_online: boolean
+          last_seen_at: string | null
+          location: string | null
+          name: string
+          posto_user_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          device_token?: string
+          id?: string
+          is_online?: boolean
+          last_seen_at?: string | null
+          location?: string | null
+          name: string
+          posto_user_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          device_token?: string
+          id?: string
+          is_online?: boolean
+          last_seen_at?: string | null
+          location?: string | null
+          name?: string
+          posto_user_id?: string
+          updated_at?: string
         }
         Relationships: []
       }
