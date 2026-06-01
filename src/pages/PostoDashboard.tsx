@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { DollarSign, Fuel, Zap, TrendingUp, Settings, FileText, Download } from "lucide-react";
 import ManagePostoUsers from "@/components/ManagePostoUsers";
+import StationsManager from "@/components/StationsManager";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
@@ -44,6 +45,9 @@ const PostoDashboard = () => {
         <MetricCard icon={Fuel} title="Abastecimentos Hoje" value={totalAbastecimentos} variant="green" />
         <MetricCard icon={Zap} title="Energia Hoje" value={`${energiaHoje.toFixed(1)} kWh`} variant="green" />
       </div>
+      {/* ESP32 Stations */}
+      <StationsManager />
+
 
       {/* Charts */}
       <div className="grid gap-4 lg:grid-cols-3">
