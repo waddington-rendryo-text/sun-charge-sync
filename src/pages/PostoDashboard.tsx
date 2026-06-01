@@ -45,6 +45,9 @@ const PostoDashboard = () => {
         <MetricCard icon={Fuel} title="Abastecimentos Hoje" value={totalAbastecimentos} variant="green" />
         <MetricCard icon={Zap} title="Energia Hoje" value={`${energiaHoje.toFixed(1)} kWh`} variant="green" />
       </div>
+      {/* ESP32 Stations */}
+      <StationsManager />
+
 
       {/* Charts */}
       <div className="grid gap-4 lg:grid-cols-3">
