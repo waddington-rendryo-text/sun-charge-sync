@@ -14,7 +14,6 @@ Deno.serve(async (req) => {
       })
     }
 
-    // ESP32 autentica via header X-Device-Token
     const deviceToken = req.headers.get('x-device-token')
     if (!deviceToken) {
       return new Response(JSON.stringify({ error: 'Missing device token' }), {
@@ -39,28 +38,29 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     )
 
-    // Localizar a estação pelo token
-    const { data: station, error: stationErr } = await admin
-      .from('stations')
-      .select('id')
+    // Localizar a estação pelo token (agora em station_secrets)
+    const { data: secret, error: secretErr } = await admin
+      .from('station_secrets')
+      .select('station_id')
       .eq('device_token', deviceToken)
       .maybeSingle()
 
-    if (stationErr || !station) {
+    if (secretErr || !secret) {
       return new Response(JSON.stringify({ error: 'Invalid device token' }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
 
-    // Inserir leitura
+    const stationId = secret.station_id
+
     const computedPower =
       power ?? (typeof voltage === 'number' && typeof current === 'number'
         ? Number((voltage * current).toFixed(2))
         : null)
 
     const { error: insertErr } = await admin.from('sensor_readings').insert({
-      station_id: station.id,
+      station_id: stationId,
       voltage: voltage ?? null,
       current: current ?? null,
       power: computedPower,
@@ -77,13 +77,12 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Marcar estação como online
     await admin
       .from('stations')
       .update({ is_online: true, last_seen_at: new Date().toISOString() })
-      .eq('id', station.id)
+      .eq('id', stationId)
 
-    return new Response(JSON.stringify({ ok: true, station_id: station.id }), {
+    return new Response(JSON.stringify({ ok: true, station_id: stationId }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
