@@ -135,10 +135,35 @@ export type Database = {
           },
         ]
       }
-      stations: {
+      station_secrets: {
         Row: {
           created_at: string
           device_token: string
+          station_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_token?: string
+          station_id: string
+        }
+        Update: {
+          created_at?: string
+          device_token?: string
+          station_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "station_secrets_station_id_fkey"
+            columns: ["station_id"]
+            isOneToOne: true
+            referencedRelation: "stations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stations: {
+        Row: {
+          created_at: string
           id: string
           is_online: boolean
           last_seen_at: string | null
@@ -149,7 +174,6 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          device_token?: string
           id?: string
           is_online?: boolean
           last_seen_at?: string | null
@@ -160,7 +184,6 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          device_token?: string
           id?: string
           is_online?: boolean
           last_seen_at?: string | null
