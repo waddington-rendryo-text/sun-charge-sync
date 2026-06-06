@@ -14,7 +14,6 @@ interface Station {
   id: string;
   name: string;
   location: string | null;
-  device_token: string;
   is_online: boolean;
   last_seen_at: string | null;
 }
@@ -34,6 +33,7 @@ interface Reading {
 const StationsManager = () => {
   const { user } = useAuth();
   const [stations, setStations] = useState<Station[]>([]);
+  const [tokens, setTokens] = useState<Record<string, string>>({});
   const [latestByStation, setLatestByStation] = useState<Record<string, Reading>>({});
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
@@ -53,17 +53,26 @@ const StationsManager = () => {
 
     if (data && data.length > 0) {
       const ids = data.map((s) => s.id);
-      const { data: readings } = await supabase
-        .from("sensor_readings")
-        .select("*")
-        .in("station_id", ids)
-        .order("recorded_at", { ascending: false })
-        .limit(100);
+      const [{ data: readings }, { data: secrets }] = await Promise.all([
+        supabase
+          .from("sensor_readings")
+          .select("*")
+          .in("station_id", ids)
+          .order("recorded_at", { ascending: false })
+          .limit(100),
+        supabase
+          .from("station_secrets")
+          .select("station_id, device_token")
+          .in("station_id", ids),
+      ]);
       const map: Record<string, Reading> = {};
       readings?.forEach((r) => {
         if (!map[r.station_id]) map[r.station_id] = r as Reading;
       });
       setLatestByStation(map);
+      const tmap: Record<string, string> = {};
+      secrets?.forEach((s) => { tmap[s.station_id] = s.device_token; });
+      setTokens(tmap);
     }
   };
 
@@ -168,7 +177,13 @@ const StationsManager = () => {
                       </p>
                     )}
                   </div>
-                  <Button size="sm" variant="outline" className="gap-1.5 text-xs" onClick={() => copyToken(s.device_token)}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="gap-1.5 text-xs"
+                    disabled={!tokens[s.id]}
+                    onClick={() => tokens[s.id] && copyToken(tokens[s.id])}
+                  >
                     <Copy className="h-3 w-3" /> Copiar token
                   </Button>
                 </div>
