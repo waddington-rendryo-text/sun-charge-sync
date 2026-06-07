@@ -1,0 +1,26 @@
+// Copie este arquivo para `config.h` e preencha com seus valores.
+// `config.h` está no .gitignore — NUNCA versione segredos.
+#pragma once
+
+// ===== Wi-Fi =====
+#define WIFI_SSID       "SuaRedeWiFi"
+#define WIFI_PASSWORD   "SuaSenhaWiFi"
+
+// ===== Lovable Cloud / Supabase =====
+// URL da edge function de ingestão
+#define INGEST_URL      "https://ipwaubkilerjuzltnmax.supabase.co/functions/v1/ingest-sensor-data"
+
+// Anon key do projeto (chave PÚBLICA — pode ficar no firmware)
+#define SUPABASE_ANON_KEY "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlwd2F1YmtpbGVyanV6bHRubWF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4NzUwNjgsImV4cCI6MjA4OTQ1MTA2OH0.qxJER33dai-BhaX1oWAL4DrXlhFS9W3cXsOL0Cd17uc"
+
+// Token único da estação — pegue em "Copiar token" no dashboard do posto
+#define DEVICE_TOKEN    "cole-aqui-o-token-da-station_secrets"
+
+// ===== Intervalos =====
+#define POST_INTERVAL_MS 5000   // envia leituras a cada 5s
+
+// ===== Pinos (ajuste ao seu hardware) =====
+#define PIN_VOLTAGE     1   // ADC1_CH0 — divisor resistivo
+#define PIN_CURRENT     2   // ADC1_CH1 — sensor de corrente (ACS712/SCT-013)
+#define PIN_TEMP        3   // ADC1_CH2 — NTC (ou troque por DS18B20)
+#define PIN_VEHICLE     4   // GPIO digital — sensor de presença/CP pilot
