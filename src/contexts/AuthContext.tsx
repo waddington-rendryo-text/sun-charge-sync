@@ -43,18 +43,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
+    let didInit = false;
+    let currentUserId: string | null = null;
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
 
         if (session?.user) {
-          setTimeout(() => fetchUserData(session.user.id), 0);
+          // Only refetch profile/roles on actual user changes — NOT on
+          // TOKEN_REFRESHED. Otherwise roles briefly reset and ProtectedRoute
+          // kicks the user back to "/".
+          const userChanged = currentUserId !== session.user.id;
+          if (!didInit || userChanged) {
+            didInit = true;
+            currentUserId = session.user.id;
+            setTimeout(() => {
+              fetchUserData(session.user.id).finally(() => setLoading(false));
+            }, 0);
+          } else {
+            setLoading(false);
+          }
         } else {
+          currentUserId = null;
           setProfile(null);
           setRoles([]);
+          setLoading(false);
         }
-        setLoading(false);
       }
     );
 
@@ -62,9 +78,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        fetchUserData(session.user.id);
+        if (!didInit) {
+          didInit = true;
+          currentUserId = session.user.id;
+          fetchUserData(session.user.id).finally(() => setLoading(false));
+        }
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
