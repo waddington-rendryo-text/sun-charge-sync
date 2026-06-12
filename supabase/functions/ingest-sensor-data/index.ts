@@ -122,15 +122,25 @@ Deno.serve(async (req) => {
       })
     }
 
-    await admin
+    const { data: stationRow } = await admin
       .from('stations')
       .update({ is_online: true, last_seen_at: new Date().toISOString() })
       .eq('id', stationId)
+      .select('charge_enabled')
+      .maybeSingle()
 
-    return new Response(JSON.stringify({ ok: true, station_id: stationId }), {
-      status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+    return new Response(
+      JSON.stringify({
+        ok: true,
+        station_id: stationId,
+        charge_enabled: stationRow?.charge_enabled ?? false,
+      }),
+      {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      },
+    )
+
   } catch (e) {
     console.error('unhandled error', e)
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
