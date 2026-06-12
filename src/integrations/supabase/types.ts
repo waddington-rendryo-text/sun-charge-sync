@@ -163,6 +163,7 @@ export type Database = {
       }
       stations: {
         Row: {
+          charge_enabled: boolean
           created_at: string
           id: string
           is_online: boolean
@@ -173,6 +174,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          charge_enabled?: boolean
           created_at?: string
           id?: string
           is_online?: boolean
@@ -183,6 +185,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          charge_enabled?: boolean
           created_at?: string
           id?: string
           is_online?: boolean

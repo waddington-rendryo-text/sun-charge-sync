@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Battery, Zap, Sun, Gift, BarChart3, Car, Activity, DollarSign, Clock, TrendingUp } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
@@ -8,14 +8,47 @@ import MetricCard from "@/components/MetricCard";
 import { mockEstacao, mockHistorico, mockConsumoSemanal, mockPosto } from "@/lib/mock-data";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 const ClienteDashboard = () => {
   const { profile } = useAuth();
-  const [status, setStatus] = useState(mockEstacao.comandos.status);
+  const [stationId, setStationId] = useState<string | null>(null);
+  const [chargeEnabled, setChargeEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    (async () => {
+      const { data } = await supabase
+        .from("stations")
+        .select("id, charge_enabled")
+        .limit(1)
+        .maybeSingle();
+      if (!data) return;
+      setStationId(data.id);
+      setChargeEnabled(!!data.charge_enabled);
+
+      channel = supabase
+        .channel(`station-${data.id}`)
+        .on(
+          "postgres_changes",
+          { event: "UPDATE", schema: "public", table: "stations", filter: `id=eq.${data.id}` },
+          (payload) => {
+            const row = payload.new as { charge_enabled?: boolean };
+            if (typeof row.charge_enabled === "boolean") setChargeEnabled(row.charge_enabled);
+          },
+        )
+        .subscribe();
+    })();
+    return () => {
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const status = chargeEnabled ? "carregando" : "parado";
   const deteccao = mockEstacao.sensores.deteccao;
   const eficiencia = mockEstacao.sensores.eficiencia;
-  const potencia = status === "carregando" ? mockEstacao.energia.potencia : 0;
+  const potencia = chargeEnabled ? mockEstacao.energia.potencia : 0;
   const kwhFornecido = mockEstacao.energia.kwh_fornecido;
   const bateriaPercent = Math.min(100, Math.round((mockEstacao.energia.tensao_bateria / 14.4) * 100));
 
@@ -23,27 +56,28 @@ const ClienteDashboard = () => {
   const totalGasto = mockHistorico.reduce((sum, s) => sum + s.custo, 0);
   const cashbackSaldo = totalGasto * (mockPosto.config.cashback_percent / 100);
 
-  const handleStart = () => {
-    if (!deteccao) {
-      toast.error("Nenhum veículo detectado!");
+  const setCharge = async (enabled: boolean) => {
+    if (!stationId) {
+      toast.error("Nenhuma estação cadastrada.");
       return;
     }
     setLoading(true);
-    setTimeout(() => {
-      setStatus("carregando");
-      setLoading(false);
-      toast.success("Carregamento iniciado com sucesso! ⚡");
-    }, 1200);
+    const { error } = await supabase
+      .from("stations")
+      .update({ charge_enabled: enabled })
+      .eq("id", stationId);
+    setLoading(false);
+    if (error) {
+      toast.error("Falha ao enviar comando: " + error.message);
+      return;
+    }
+    setChargeEnabled(enabled);
+    toast.success(enabled ? "Comando enviado: INICIAR ⚡" : "Comando enviado: PARAR");
   };
 
-  const handleStop = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setStatus("parado");
-      setLoading(false);
-      toast.info("Carregamento finalizado.");
-    }, 800);
-  };
+  const handleStart = () => setCharge(true);
+  const handleStop = () => setCharge(false);
+
 
   return (
     <div className="container mx-auto max-w-5xl space-y-6 px-4 py-6">
