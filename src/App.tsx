@@ -6,8 +6,6 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import AppHeader from "@/components/AppHeader";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Auth from "./pages/Auth";
-import Index from "./pages/Index";
-import ClienteDashboard from "./pages/ClienteDashboard";
 import PostoDashboard from "./pages/PostoDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -32,26 +30,12 @@ const App = () => (
               path="/"
               element={
                 <ProtectedRoute>
-                  <AppLayout><Index /></AppLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/cliente"
-              element={
-                <ProtectedRoute requiredRole="cliente">
-                  <AppLayout><ClienteDashboard /></AppLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/posto"
-              element={
-                <ProtectedRoute requiredRole="posto">
                   <AppLayout><PostoDashboard /></AppLayout>
                 </ProtectedRoute>
               }
             />
+            <Route path="/posto" element={<Navigate to="/" replace />} />
+            <Route path="/cliente" element={<Navigate to="/" replace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
