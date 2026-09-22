@@ -1,8 +1,5 @@
 import { useState } from "react";
 import { DollarSign, Fuel, Zap, TrendingUp, Settings, FileText, Download } from "lucide-react";
-import ManagePostoUsers from "@/components/ManagePostoUsers";
-import StationsManager from "@/components/StationsManager";
-import { useAuth } from "@/contexts/AuthContext";
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
@@ -20,8 +17,6 @@ import { toast } from "sonner";
 const PIE_COLORS = ["hsl(160,84%,39%)", "hsl(217,91%,60%)"];
 
 const PostoDashboard = () => {
-  const { roles } = useAuth();
-  const isAdmin = roles.includes("admin");
   const [precoKwh, setPrecoKwh] = useState(mockPosto.config.preco_kwh.toString());
   const [cashback, setCashback] = useState(mockPosto.config.cashback_percent.toString());
   const totalAbastecimentos = mockAbastecimentosRealtime.length;
@@ -35,7 +30,6 @@ const PostoDashboard = () => {
     <div className="container mx-auto max-w-6xl space-y-6 px-4 py-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-foreground">Painel do Posto 🏪</h1>
-        {isAdmin && <ManagePostoUsers />}
       </div>
 
       {/* Top Metrics */}
@@ -45,8 +39,6 @@ const PostoDashboard = () => {
         <MetricCard icon={Fuel} title="Abastecimentos Hoje" value={totalAbastecimentos} variant="green" />
         <MetricCard icon={Zap} title="Energia Hoje" value={`${energiaHoje.toFixed(1)} kWh`} variant="green" />
       </div>
-      {/* ESP32 Stations */}
-      <StationsManager />
 
 
       {/* Charts */}

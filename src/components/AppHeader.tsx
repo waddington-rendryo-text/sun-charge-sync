@@ -1,15 +1,11 @@
-import { ArrowLeftRight, Zap, LogOut } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Zap, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 
 const AppHeader = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { profile, signOut } = useAuth();
-  const isCliente = location.pathname.startsWith("/cliente");
-  const isPosto = location.pathname.startsWith("/posto");
-  const showSwitch = isCliente || isPosto;
 
   const handleSignOut = async () => {
     await signOut();
@@ -24,28 +20,12 @@ const AppHeader = () => {
             <Zap className="h-5 w-5 text-primary-foreground" />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-bold leading-tight text-foreground">Plug & Charge</span>
+            <span className="text-sm font-bold leading-tight text-foreground">Plug &amp; Charge</span>
             <span className="text-[10px] font-medium leading-tight text-muted-foreground">Recarga Solar</span>
           </div>
         </button>
 
         <div className="flex items-center gap-3">
-          {showSwitch && (
-            <>
-              <span className="hidden sm:inline text-xs font-medium text-muted-foreground px-2 py-1 rounded-full bg-muted">
-                {isCliente ? "👤 Cliente" : "🏪 Posto"}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate("/")}
-                className="gap-1.5 text-xs"
-              >
-                <ArrowLeftRight className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Trocar Perfil</span>
-              </Button>
-            </>
-          )}
           {profile && (
             <span className="hidden md:inline text-xs text-muted-foreground">
               {profile.display_name}

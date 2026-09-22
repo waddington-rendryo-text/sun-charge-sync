@@ -1,17 +1,13 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Loader2 } from "lucide-react";
-import type { Database } from "@/integrations/supabase/types";
-
-type AppRole = Database["public"]["Enums"]["app_role"];
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requiredRole?: AppRole;
 }
 
-const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
-  const { session, roles, loading } = useAuth();
+const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+  const { session, loading } = useAuth();
 
   if (loading) {
     return (
@@ -23,10 +19,6 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
 
   if (!session) {
     return <Navigate to="/auth" replace />;
-  }
-
-  if (requiredRole && !roles.includes(requiredRole) && !roles.includes("admin")) {
-    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
