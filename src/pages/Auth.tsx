@@ -150,9 +150,6 @@ const Auth = () => {
           </div>
         </div>
 
-        <p className="text-center text-[11px] text-muted-foreground">
-          Recarga sem fio alimentada por energia solar ☀️
-        </p>
       </div>
     </div>
   );
